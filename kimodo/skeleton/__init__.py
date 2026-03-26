@@ -4,6 +4,7 @@
 
 from .base import SkeletonBase
 from .definitions import (
+    ASV1Skeleton26,
     G1Skeleton34,
     SMPLXSkeleton22,
     SOMASkeleton30,
@@ -15,6 +16,7 @@ from .transforms import global_rots_to_local_rots, to_standard_tpose
 
 __all__ = [
     "SkeletonBase",
+    "ASV1Skeleton26",
     "G1Skeleton34",
     "SOMASkeleton30",
     "SOMASkeleton77",

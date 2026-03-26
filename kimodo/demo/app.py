@@ -419,7 +419,9 @@ class Demo:
         ci = len(session.motions)
         character_name = f"character{ci}"
         # build character skeleton and skinning mesh
-        if "g1" in session.model_name:
+        if "asv1" in session.model_name:
+            mesh_mode = "asv1_glb"
+        elif "g1" in session.model_name:
             mesh_mode = "g1_stl"
         elif "smplx" in session.model_name:
             mesh_mode = "smplx_skin"

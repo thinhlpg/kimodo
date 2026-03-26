@@ -235,6 +235,29 @@ def create_gui(
                 hint="Load the selected model (dataset, skeleton, version).",
             )
 
+            # GPU status indicator
+            def _gpu_status_text() -> str:
+                if torch.cuda.is_available():
+                    dev_idx = torch.cuda.current_device()
+                    name = torch.cuda.get_device_name(dev_idx)
+                    cap = torch.cuda.get_device_capability(dev_idx)
+                    arch_list = torch.cuda.get_arch_list()
+                    sm_tag = f"sm_{cap[0]}{cap[1]}"
+                    compatible = sm_tag in arch_list or f"compute_{cap[0]}{cap[1]}" in arch_list
+                    mem_alloc = torch.cuda.memory_allocated(dev_idx) / 1024**3
+                    mem_total = torch.cuda.get_device_properties(dev_idx).total_mem / 1024**3
+                    status = "ON GPU" if compatible else "CPU FALLBACK (sm mismatch)"
+                    icon = "🟢" if compatible else "🟡"
+                    return (
+                        f"{icon} **{status}** | `{name}` | "
+                        f"VRAM: {mem_alloc:.1f}/{mem_total:.1f} GB | "
+                        f"PyTorch {torch.__version__} ({sm_tag} {'OK' if compatible else 'NOT in ' + str(arch_list)})"
+                    )
+                else:
+                    return "🔴 **CPU ONLY** — No CUDA device available"
+
+            gui_gpu_status = client.gui.add_markdown(content=_gpu_status_text())
+
             class ModelSelectorHandle:
                 """Wrapper so session and callbacks can treat three dropdowns as one."""
 
@@ -1780,6 +1803,7 @@ def create_gui(
                 loading_notif.with_close_button = True
                 loading_notif.auto_close_seconds = 5.0
                 loading_notif.color = "green"
+                gui_gpu_status.content = _gpu_status_text()
             except Exception as e:
                 loading_notif.loading = False
                 loading_notif.with_close_button = True
@@ -1790,6 +1814,7 @@ def create_gui(
                     auto_close_seconds=10.0,
                 )
                 gui_model_selector.set_from_short_key(session.model_name)
+                gui_gpu_status.content = _gpu_status_text()
 
         @gui_load_model_button.on_click
         def _(event: viser.GuiEvent) -> None:

@@ -14,6 +14,7 @@ import trimesh
 import viser
 import viser.transforms as tf
 from kimodo.skeleton import (
+    ASV1Skeleton26,
     G1Skeleton34,
     SkeletonBase,
     SMPLXSkeleton22,
@@ -21,6 +22,7 @@ from kimodo.skeleton import (
     SOMASkeleton77,
 )
 
+from .asv1_rig import ASV1MeshRig
 from .coords import rotation_matrix_from_two_vec
 from .g1_rig import (
     G1MeshRig,
@@ -468,6 +470,24 @@ class Character:
                 min_height = init_joints_pos[:, 1].min().item()
                 init_joints_pos[:, 1] -= min_height
                 self.set_pose(init_joints_pos, init_global_joint_rots)
+                self.set_skinned_mesh_visibility(visible_skinned_mesh)
+                self.set_skinned_mesh_opacity(skinned_mesh_opacity)
+            elif isinstance(self.skeleton, ASV1Skeleton26) and mesh_mode == "asv1_glb":
+                glb_path = Path(self.skeleton.folder) / "meshes" / "ASV1_full_body_rigged.glb"
+                if not os.path.exists(glb_path):
+                    raise ValueError(f"ASV1 GLB mesh not found: {glb_path}")
+                self.g1_mesh_rig = ASV1MeshRig(
+                    name,
+                    server,
+                    self.skeleton,
+                    str(glb_path),
+                    DARK_THEME["mesh"] if dark_mode else LIGHT_THEME["mesh"],
+                )
+                bind_pos = self.skeleton.neutral_joints.clone()
+                min_height = bind_pos[:, 1].min().item()
+                bind_pos[:, 1] -= min_height
+                bind_rotmat = torch.eye(3, device=bind_pos.device).repeat(bind_pos.shape[0], 1, 1)
+                self.set_pose(bind_pos, bind_rotmat)
                 self.set_skinned_mesh_visibility(visible_skinned_mesh)
                 self.set_skinned_mesh_opacity(skinned_mesh_opacity)
             else:

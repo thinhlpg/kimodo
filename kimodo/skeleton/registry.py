@@ -7,6 +7,7 @@ from pathlib import Path
 from kimodo.assets import SKELETONS_ROOT
 
 from .definitions import (
+    ASV1Skeleton26,
     G1Skeleton34,
     SMPLXSkeleton22,
     SOMASkeleton30,
@@ -30,7 +31,9 @@ def build_skeleton(nbjoints: int, assets_folder: str | Path = SKELETONS_ROOT):
         ValueError: If `nbjoints` does not match a registered skeleton.
     """
     assets_folder = Path(assets_folder)
-    if nbjoints == 34:
+    if nbjoints == 26:
+        return ASV1Skeleton26(assets_folder / "asv1skel26")
+    elif nbjoints == 34:
         return G1Skeleton34(assets_folder / "g1skel34")
     elif nbjoints == 22:
         return SMPLXSkeleton22(assets_folder / "smplx22")

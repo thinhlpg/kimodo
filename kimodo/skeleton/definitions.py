@@ -329,6 +329,51 @@ class G1Skeleton34(SkeletonBase):
     ]
 
 
+class ASV1Skeleton26(SkeletonBase):
+    """Asimov V1 humanoid robot skeleton with 26 joints, no face."""
+
+    name = "asv1skel26"
+
+    right_foot_joint_names = ["R_LEG_ANKLE_PITCH", "R_LEG_ANKLE_ROLL"]
+    left_foot_joint_names = ["L_LEG_ANKLE_PITCH", "L_LEG_ANKLE_ROLL"]
+    right_hand_joint_names = ["R_WRIST_YAW"]
+    left_hand_joint_names = ["L_WRIST_YAW"]
+
+    hip_joint_names = [
+        "R_LEG_HIP_PITCH",
+        "L_LEG_HIP_PITCH",
+    ]  # [right, left] for root orientation calc
+
+    bone_order_names_with_parents = [
+        ("RobotOrigin", None),
+        ("R_LEG_HIP_PITCH", "RobotOrigin"),
+        ("R_LEG_HIP_ROLL", "R_LEG_HIP_PITCH"),
+        ("R_LEG_HIP_YAW", "R_LEG_HIP_ROLL"),
+        ("R_LEG_KNEE", "R_LEG_HIP_YAW"),
+        ("R_LEG_ANKLE_PITCH", "R_LEG_KNEE"),
+        ("R_LEG_ANKLE_ROLL", "R_LEG_ANKLE_PITCH"),
+        ("L_LEG_HIP_PITCH", "RobotOrigin"),
+        ("L_LEG_HIP_ROLL", "L_LEG_HIP_PITCH"),
+        ("L_LEG_HIP_YAW", "L_LEG_HIP_ROLL"),
+        ("L_LEG_KNEE", "L_LEG_HIP_YAW"),
+        ("L_LEG_ANKLE_PITCH", "L_LEG_KNEE"),
+        ("L_LEG_ANKLE_ROLL", "L_LEG_ANKLE_PITCH"),
+        ("WAIST_YAW", "RobotOrigin"),
+        ("HEAD_YAW", "WAIST_YAW"),
+        ("HEAD_PITCH", "HEAD_YAW"),
+        ("R_SHOULDER_PITCH", "WAIST_YAW"),
+        ("R_SHOULDER_ROLL", "R_SHOULDER_PITCH"),
+        ("R_SHOULDER_YAW", "R_SHOULDER_ROLL"),
+        ("R_ELBOW", "R_SHOULDER_YAW"),
+        ("R_WRIST_YAW", "R_ELBOW"),
+        ("L_SHOULDER_PITCH", "WAIST_YAW"),
+        ("L_SHOULDER_ROLL", "L_SHOULDER_PITCH"),
+        ("L_SHOULDER_YAW", "L_SHOULDER_ROLL"),
+        ("L_ELBOW", "L_SHOULDER_YAW"),
+        ("L_WRIST_YAW", "L_ELBOW"),
+    ]
+
+
 class SMPLXSkeleton22(SkeletonBase):
     """SMPL-X skeleton with body-only 22 joints."""
 
